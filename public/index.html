@@ -47,6 +47,7 @@ function guessWord(){const t=$('guess').value.trim();if(t)socket.emit('whiteGues
 function copyLink(){const link=location.origin+location.pathname+'?code='+state.code;navigator.clipboard?.writeText(link).then(()=>toast('Lien copié !')).catch(()=>prompt('Copie ce lien :',link))||prompt('Copie ce lien :',link)}
 socket.on('joined',x=>{localStorage.setItem('undercover-session',JSON.stringify(x));history.replaceState({},'',location.pathname+'?code='+x.code);joining=false;});
 socket.on('state',s=>{const oldPhase=state?.phase;state=s;if(oldPhase!==s.phase){uncovered=false;voteChoice=null;}render();});
-socket.on('gameError',toast);socket.on('kicked',()=>{localStorage.removeItem('undercover-session');state=null;home();toast('Tu as été retiré du salon.');});socket.on('displaced',()=>{state=null;home();toast('Session ouverte sur un autre appareil.');});
-socket.on('connect',()=>{const prior=session();if(prior)socket.emit('join',prior);else home()});socket.on('disconnect',()=>toast('Connexion interrompue. Reconnexion en cours…'));
+socket.on('gameError',msg=>{if(msg.includes('Salon introuvable')||msg.includes('La partie a commencé')){localStorage.removeItem('undercover-session');state=null;joining=false;history.replaceState({},'',location.pathname);home();toast('Ancien salon expiré. Crée un nouveau salon ou rejoins tes amis avec leur code.');}else{if(!state)home();toast(msg);}});socket.on('kicked',()=>{localStorage.removeItem('undercover-session');state=null;home();toast('Tu as été retiré du salon.');});socket.on('displaced',()=>{state=null;home();toast('Session ouverte sur un autre appareil.');});
+socket.on('connect',()=>{const prior=session();if(prior){if(!state)home();socket.emit('join',prior);}else home()});socket.on('disconnect',()=>toast('Connexion interrompue. Reconnexion en cours…'));
+home();
 </script></body></html>
