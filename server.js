@@ -21,7 +21,7 @@ function view(r,p) {
   return {
     code:r.code, me:p.id, host:r.host, phase:r.phase, round:r.round, settings:r.settings,
     players:r.players.map(q => ({id:q.id,name:q.name,out:q.out,connected:q.connected,voted:r.votes.has(q.id)})),
-    myWord:r.phase==='lobby'?null:p.word, myRole:r.phase==='lobby'?null:p.role,
+    myWord:r.phase==='lobby'?null:p.word,
     yourVote:r.votes.get(p.id)||null, votesCount:r.votes.size,
     turn:r.turn, result:r.result, history:r.history.slice(-8), winner:r.winner, whiteGuesser:r.whiteGuesser,
     canVote:r.phase==='vote'&&!p.out&&!voted,
